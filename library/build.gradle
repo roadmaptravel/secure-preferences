@@ -1,19 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.novoda.bintray-release'
 
 buildscript {
     repositories {
         jcenter()
     }
-    dependencies {
-        classpath 'com.novoda:bintray-release:0.3.4'
-    }
 }
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 18
@@ -37,14 +31,14 @@ android {
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    testCompile testLibraries.mockito
-    testCompile testLibraries.jUnit
+    testImplementation testLibraries.mockito
+    testImplementation testLibraries.jUnit
 
-    androidTestCompile testLibraries.mockito
-    androidTestCompile testLibraries.hamcrestLibrary
-    androidTestCompile testLibraries.hamcrestCore
+    androidTestImplementation testLibraries.mockito
+    androidTestImplementation testLibraries.hamcrestLibrary
+    androidTestImplementation testLibraries.hamcrestCore
 
 }
 
@@ -52,44 +46,6 @@ dependencies {
 def siteUrl = 'https://github.com/ophio/secure-preferences'
 def gitUrl = 'https://github.com/ophio/secure-preferences.git'
 group = "in.co.ophio"
-
-
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-
-                // Add your description here
-                name 'This library aims to encrypt the data in shared preferences. The encryption key is stored in ' +
-                        'Android Keystore System. https://developer.android.com/training/articles/keystore.html.'
-                url siteUrl
-
-                // Set your license
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id System.getenv('BINTRAY_SECURE_PREF_USER_ID')
-                        name System.getenv('BINTRAY_SECURE_PREF_USER_NAME')
-                        email System.getenv('BINTRAY_SECURE_PREF_USER_EMAIL')
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
-                }
-            }
-        }
-    }
-}
 
 artifacts {
 
@@ -103,7 +59,6 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
     failOnError false
 }
 
@@ -114,16 +69,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives javadocJar
     archives sourcesJar
-}
-
-
-publish {
-    userOrg = 'ophio'
-    groupId = 'in.co.ophio'
-    artifactId = 'secure-preferences'
-    publishVersion = libraryVersionName
-    desc = ''
-    website = 'https://github.com/ophio/secure-preferences'
 }
 
 apply from: rootProject.file('checkstyle_android_library.gradle')
